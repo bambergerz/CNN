@@ -12,6 +12,12 @@ class Picture:
         self._picture = self.create_pixels(p)
         self.numpy_rep = np.array(p)
 
+    def __getitem__(self, item):
+        return self._picture[item]
+
+    def __len__(self):
+        return len(self._picture)
+
     @staticmethod
     def enforce_assertions(p):
         """
@@ -40,7 +46,7 @@ class Picture:
                     assert entry <= 255, "found a pixel with an R, G, or B value greater than 255"
 
     @staticmethod
-    def create_pixels(self, picture):
+    def create_pixels(picture):
         """
 
         :param picture: the inisital picture which consisted of a fundamental data types
