@@ -17,12 +17,12 @@ class Batch:
     COUNTER = 0
 
     def __init__(self, batch_dict):
+        Batch.COUNTER += 1
         self.images = self.make_images(batch_dict['data'.encode()])
         self.tags = batch_dict['labels'.encode()]
         self.name = "CIFAR-10-BATCH-" + str(Batch.COUNTER)
         self.number = Batch.COUNTER
         print("Done initializing batch: " + self.name)
-        Batch.COUNTER += 1
 
     @staticmethod
     def make_images(data):
@@ -37,7 +37,7 @@ class Batch:
         """
         images = []
         for image in range(len(data)):
-            print("Processing image number " + str(image))
+            # print("Processing image number " + str(image))
             source_image = data[image]
             current_image = []
             for row in range(IMAGE_HEIGHT):
@@ -50,7 +50,7 @@ class Batch:
                     current_row.append(current_entry)
                 current_image.append(current_row)
             images.append(current_image)
-        print("All done!")
+        # print("All done!")
         return images
 
     def write_to_json(self):
@@ -75,6 +75,8 @@ class Batch:
             with open(file_name, 'w') as fileHandle:
                 fileHandle.write(json.dumps(image_dict))
 
+        os.chdir(ORIGINAL_PATH)
+
 
 def unpickle(file):
     import pickle
@@ -83,16 +85,18 @@ def unpickle(file):
     return my_dict
 
 
-if __name__ == "__main__":
-    os.chdir(CIFAR_10_PATH)
-    dicts = []
-    for x in range(5):
-        num = str(x + 1)
-        name = "data_batch_" + num
-        dicts.append(unpickle(name))
+def get_batch(num):
+    """
 
-    batches = []
-    for d in dicts:
-        print("Starting to process bath " + str(d["batch_label".encode()]))
-        batch = Batch(d)
-        batches.append(batch)
+    :param num: The number of the batch we would like to process. An int between 1 and 5
+    :return: the batch object representing the desired batch.
+    """
+    assert isinstance(num, int)
+    assert 0 < num < 6
+    current_loc = os.getcwd()
+    os.chdir(CIFAR_10_PATH)
+    batch_dict = unpickle("data_batch_" + str(num + 1))
+    batch = Batch(batch_dict)
+    os.chdir(current_loc)
+    return batch
+
