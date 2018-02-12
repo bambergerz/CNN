@@ -2,6 +2,7 @@ import picture
 import numpy as np
 import cifar.cifar as cifar
 
+
 class Distance:
     def __init__(self, p1, p2):
         """
