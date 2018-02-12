@@ -17,6 +17,10 @@ class Batch:
     COUNTER = 0
 
     def __init__(self, batch_dict):
+        """
+
+        :param batch_dict: A dictionary obtained by unpickling batch files from either cifar-10 or cifar-100.
+        """
         Batch.COUNTER += 1
         self.images = self.make_images(batch_dict['data'.encode()])
         self.tags = batch_dict['labels'.encode()]
@@ -79,6 +83,12 @@ class Batch:
 
 
 def unpickle(file):
+    """
+
+    :param file: the name of a batch file to unpickle
+    :return: A dictionary representing the batch.
+    Can be turned into a Batch object via feeding this dict into the Batch constructor.
+    """
     import pickle
     with open(file, 'rb') as fo:
         my_dict = pickle.load(fo, encoding='bytes')
@@ -99,4 +109,3 @@ def get_batch(num):
     batch = Batch(batch_dict)
     os.chdir(current_loc)
     return batch
-
